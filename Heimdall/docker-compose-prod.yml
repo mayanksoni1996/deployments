@@ -34,7 +34,25 @@ services:
     - "traefik.http.routers.heimdall-identity-management-websecure.rule=Host(`prod.web.mayanksoni.tech`)&&PathPrefix(`/api/idm`)"
     - "traefik.http.routers.heimdall-identity-management-websecure.tls=true"
     - "traefik.http.routers.heimdall-identity-management-websecure.service=heimdall-identity-management"
-    - "traefik.http.services.heimdall-identity-management.loadbalancer.server.port=80"
+    - "traefik.http.services.heimdall-identity-management.loadbalancer.server.port=8,080"
+    - "traefik.docker.network=proxy"
+  heimdall-tenant-service:
+    image: "ghcr.io/heimdall-security/heimdall-tenant-service:main"
+    container_name: "heimdall-tenant-service"
+    networks:
+    - "proxy"
+    restart: "always"
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.heimdall-tenant-service.entrypoints=http"
+    - "traefik.http.routers.heimdall-tenant-service.rule=Host(`prod.web.mayanksoni.tech`)&&PathPrefix(`/api/tenant`)"
+    - "traefik.http.middlewares.heimdall-tenant-service-https-redirect.redirectscheme.scheme=https"
+    - "traefik.http.routers.heimdall-tenant-service.middlewares=heimdall-tenant-service-https-redirect"
+    - "traefik.http.routers.heimdall-tenant-service-websecure.entrypoints=https"
+    - "traefik.http.routers.heimdall-tenant-service-websecure.rule=Host(`prod.web.mayanksoni.tech`)&&PathPrefix(`/api/tenant`)"
+    - "traefik.http.routers.heimdall-tenant-service-websecure.tls=true"
+    - "traefik.http.routers.heimdall-tenant-service-websecure.service=heimdall-tenant-service"
+    - "traefik.http.services.heimdall-tenant-service.loadbalancer.server.port=8,080"
     - "traefik.docker.network=proxy"
 networks:
   proxy:
