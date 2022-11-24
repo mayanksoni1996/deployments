@@ -1,0 +1,41 @@
+version: "3.7"
+services:
+  heimdall-web:
+    image: "ghcr.io/heimdall-security/heimdall-web-service:main"
+    container_name: "heimdall-web"
+    networks:
+    - "proxy"
+    restart: "always"
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.heimdall-web.entrypoints=http"
+    - "traefik.http.routers.heimdall-webrule=Host(`dev.web.mayanksoni.tech`)&&PathPrefix(`/web`)"
+    - "traefik.http.middlewares.heimdall-web-https-redirect.redirectscheme.scheme=https"
+    - "traefik.http.routers.heimdall-web.middlewares=heimdall-web-https-redirect"
+    - "traefik.http.routers.heimdall-web-websecure.entrypoints=https"
+    - "traefik.http.routers.heimdall-web-websecurerule=Host(`dev.web.mayanksoni.tech`)&&PathPrefix(`/web`)"
+    - "traefik.http.routers.heimdall-web-websecure.tls=true"
+    - "traefik.http.routers.heimdall-web-websecure.service=heimdall-web"
+    - "traefik.http.services.heimdall-web.loadbalancer.server.port=80"
+    - "traefik.docker.network=proxy"
+  heimdall-identity-management:
+    image: "ghcr.io/heimdall-security/heimdall-idm:master"
+    container_name: "heimdall-identity-management"
+    networks:
+    - "proxy"
+    restart: "always"
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.heimdall-identity-management.entrypoints=http"
+    - "traefik.http.routers.heimdall-identity-managementrule=Host(`dev.web.mayanksoni.tech`)&&PathPrefix(`/api/idm`)"
+    - "traefik.http.middlewares.heimdall-identity-management-https-redirect.redirectscheme.scheme=https"
+    - "traefik.http.routers.heimdall-identity-management.middlewares=heimdall-identity-management-https-redirect"
+    - "traefik.http.routers.heimdall-identity-management-websecure.entrypoints=https"
+    - "traefik.http.routers.heimdall-identity-management-websecurerule=Host(`dev.web.mayanksoni.tech`)&&PathPrefix(`/api/idm`)"
+    - "traefik.http.routers.heimdall-identity-management-websecure.tls=true"
+    - "traefik.http.routers.heimdall-identity-management-websecure.service=heimdall-identity-management"
+    - "traefik.http.services.heimdall-identity-management.loadbalancer.server.port=80"
+    - "traefik.docker.network=proxy"
+networks:
+  proxy:
+    external: true
