@@ -23,6 +23,7 @@ services:
     container_name: "heimdall-identity-management"
     networks:
     - "proxy"
+    - "internal"
     restart: "always"
     labels:
     - "traefik.enable=true"
@@ -57,3 +58,4 @@ services:
 networks:
   proxy:
     external: true
+  internal:
