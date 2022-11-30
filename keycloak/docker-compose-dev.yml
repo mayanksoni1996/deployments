@@ -20,7 +20,7 @@ services:
     - "traefik.docker.network=proxy"
   env_file:
     - stack.env
-  command: start-dev
+  command: ["start-dev"]
 networks:
   proxy:
     external: true
