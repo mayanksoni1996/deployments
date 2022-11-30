@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  keycloak:
+    image: "quay.io/keycloak/keycloak:20.0.1"
+    container_name: "keycloak"
+    networks:
+    - "proxy"
+    restart: "always"
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.keycloak.entrypoints=http"
+    - "traefik.http.routers.keycloak.rule=Host(`int.web.mayanksoni.tech`)&&PathPrefix(`/autthenticator`)"
+    - "traefik.http.middlewares.keycloak-https-redirect.redirectscheme.scheme=https"
+    - "traefik.http.routers.keycloak.middlewares=keycloak-https-redirect"
+    - "traefik.http.routers.keycloak-websecure.entrypoints=https"
+    - "traefik.http.routers.keycloak-websecure.rule=Host(`int.web.mayanksoni.tech`)&&PathPrefix(`/autthenticator`)"
+    - "traefik.http.routers.keycloak-websecure.tls=true"
+    - "traefik.http.routers.keycloak-websecure.service=keycloak"
+    - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+    - "traefik.docker.network=proxy"
+networks:
+  proxy:
+    external: true
