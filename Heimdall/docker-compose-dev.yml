@@ -41,7 +41,6 @@ services:
     container_name: "heimdall-tenant-service"
     networks:
     - "proxy"
-    - "internal"
     restart: "always"
     labels:
     - "traefik.enable=true"
