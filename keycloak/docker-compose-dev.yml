@@ -18,6 +18,9 @@ services:
     - "traefik.http.routers.keycloak-websecure.service=keycloak"
     - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
     - "traefik.docker.network=proxy"
+  env_file:
+    - stack.env
+  command: start-dev
 networks:
   proxy:
     external: true
